@@ -22,7 +22,8 @@ module airdnb::airdnb {
         description: String,
         votes_for: u64,
         votes_against: u64,
-        creator: address, // Address of the proposal creator
+        creator: address,
+        voters: vector<ID>,
     }
 
     // Witness
@@ -71,6 +72,7 @@ module airdnb::airdnb {
             votes_for: 0,
             votes_against: 0,
             creator: tx_context::sender(ctx),
+            voters: vector::empty(),
         };
         transfer::transfer(proposal, tx_context::sender(ctx));
     }
@@ -87,6 +89,8 @@ module airdnb::airdnb {
 
     // Function to vote on a proposal
     public entry fun vote_on_proposal(proposal: &mut Proposal, nft: &mut BookingNFT, vote_for: bool, ctx: &mut TxContext) {
+        assert!(!vector::contains(&proposal.voters, &object::id(nft)), 0);
+
         let current_time_ms = tx_context::epoch_timestamp_ms(ctx);
         let remaining = remaining_nights(nft, current_time_ms);
         let vote_weight = if (remaining < nft.nights) { remaining } else { nft.nights };
@@ -95,7 +99,9 @@ module airdnb::airdnb {
             proposal.votes_for = proposal.votes_for + vote_weight;
         } else {
             proposal.votes_against = proposal.votes_against + vote_weight;
-        }
+        };
+
+        vector::push_back(&mut proposal.voters, object::id(nft));
     }
 
     // Function to get the voting results (for simplicity)
