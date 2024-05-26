@@ -18,6 +18,16 @@ export type ApiBookingNFTObject = {
   checkOutDate: string;
 };
 
+export type ApiProposalObject = {
+  id: number;
+  objectId: string;
+  title: string;
+  creator: string;
+  description: string;
+  votesFor: number;
+  votesAgainst: number;
+};
+
 export type ApiEscrowObject = {
   id: string;
   objectId: string;

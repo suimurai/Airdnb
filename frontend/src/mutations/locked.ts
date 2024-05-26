@@ -91,7 +91,7 @@ export function useUnlockMutation() {
         // because the indexer works in intervals of 1s.
         // if we invalidate too early, we might not get the latest state.
         queryClient.invalidateQueries({
-          queryKey: [QueryKey.Locked],
+          queryKey: [QueryKey.Proposal],
         });
       }, 1_000);
     },

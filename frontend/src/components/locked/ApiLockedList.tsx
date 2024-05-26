@@ -38,12 +38,12 @@ export function LockedList({
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery({
       initialPageParam: null,
-      queryKey: [QueryKey.Locked, params, lockedId],
+      queryKey: [QueryKey.Proposal, params, lockedId],
       queryFn: async ({ pageParam }) => {
         const data = await (
           await fetch(
             CONSTANTS.apiEndpoint +
-              "locked" +
+              "proposals" +
               constructUrlSearchParams({
                 deleted: "false",
                 ...(pageParam ? { cursor: pageParam as string } : {}),

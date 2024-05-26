@@ -7,6 +7,7 @@ import { LockedList } from "../components/locked/ApiLockedList";
 import { EscrowList } from "../components/escrows/EscrowList";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { useCurrentAccount } from "@mysten/dapp-kit";
+import { ProposalList } from "@/components/proposals/ProposalList";
 
 export function EscrowDashboard() {
   const account = useCurrentAccount();
@@ -14,9 +15,8 @@ export function EscrowDashboard() {
     {
       name: "Proposals",
       component: () => (
-        <LockedList
+        <ProposalList
           params={{}}
-          enableSearch
         />
       ),
       tooltip: "Proposals",

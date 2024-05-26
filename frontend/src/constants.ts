@@ -6,7 +6,7 @@ import demoContract from "../../api/airdnb-contract.json";
 import airdnbContract from "../../api/airdnb-contract.json";
 
 export enum QueryKey {
-  Locked = "locked",
+  Proposal = "proposal",
   BookingNFT = "bookingNFT",
   GetOwnedObjects = "getOwnedObjects",
 }

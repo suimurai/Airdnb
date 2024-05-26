@@ -67,11 +67,11 @@ app.get('/bookingNFTs', async (req, res) => {
 app.get('/proposals', async (req, res) => {
 	const acceptedQueries: WhereParam[] = [];
 	try {
-		const escrows = await prisma.proposal.findMany({
+		const proposals = await prisma.proposal.findMany({
 			where: parseWhereStatement(req.query, acceptedQueries)!,
 			...parsePaginationForQuery(req.query),
 		});
-		return res.send(formatPaginatedResponse(escrows));
+		return res.send(formatPaginatedResponse(proposals));
 	} catch (e) {
 		console.error(e);
 		return res.status(400).send(e);
