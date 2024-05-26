@@ -6,12 +6,12 @@ import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { CONFIG } from '../config';
 import { getActiveAddress, signAndExecute } from '../sui-utils';
 
-/// Demo PTB to cancel an escrow.
+/// Demo PTB to cancel an airdnb.
 export const cancelEscrow = async (escrowId: string) => {
 	const txb = new TransactionBlock();
 
 	const bear = txb.moveCall({
-		target: `${CONFIG.SWAP_CONTRACT.packageId}::shared::return_to_sender`,
+		target: `${CONFIG.AIRDNB_CONTRACT.packageId}::shared::return_to_sender`,
 		arguments: [txb.object(escrowId)],
 		typeArguments: [`${CONFIG.DEMO_CONTRACT.packageId}::demo_bear::DemoBear`],
 	});

@@ -1,4 +1,4 @@
-# Escrow API Demo
+# Airdnb API Demo
 
 This demo is built to showcase how we can build an event indexer + API
 to efficiently serve on-chain data for our app.
@@ -91,7 +91,7 @@ Available query parameters:
 | keyId     | string            |
 | creator   | string            |
 
-### `/escrows`: Returns indexed escrow objects
+### `/escrows`: Returns indexed airdnb objects
 
 Available query parameters:
 

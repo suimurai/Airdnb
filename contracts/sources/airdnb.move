@@ -9,7 +9,7 @@ module airdnb::airdnb {
         id: UID,
         room: String,
         nights: u64,
-        check_out_date: u64,
+        check_out_time_ms: u64,
     }
 
     // Structure representing the admin capability
@@ -24,7 +24,6 @@ module airdnb::airdnb {
         description: String,
         votes_for: u64,
         votes_against: u64,
-        creator: address,
         voters: vector<ID>,
     }
 
@@ -36,7 +35,8 @@ module airdnb::airdnb {
         id: ID,
         room: String,
         nights: u64,
-        check_out_date: u64,
+        check_out_time_ms: u64,
+        minter: address,
     }
 
     // Event: ProposalCreated
@@ -57,7 +57,7 @@ module airdnb::airdnb {
 
     // Event: ProposalUpdated
     public struct ProposalUpdated has drop, copy {
-        proposal_id: ID,
+        id: ID,
         votes_for: u64,
         votes_against: u64,
     }
@@ -88,18 +88,19 @@ module airdnb::airdnb {
     }
 
     // Function to mint a new Booking NFT
-    public fun mint(_: &AdminCap, room: vector<u8>, nights: u64, check_out_date: u64, ctx: &mut TxContext): BookingNFT {
+    public fun mint(_: &AdminCap, room: vector<u8>, nights: u64, check_out_time_ms: u64, ctx: &mut TxContext): BookingNFT {
         let nft = BookingNFT {
             id: object::new(ctx),
             room: utf8(room),
             nights,
-            check_out_date,
+            check_out_time_ms,
         };
         event::emit(BookingNFTMinted {
             id: object::id(&nft),
             room: nft.room,
             nights: nft.nights,
-            check_out_date: nft.check_out_date,
+            check_out_time_ms: nft.check_out_time_ms,
+            minter: tx_context::sender(ctx),
         });
         nft
     }
@@ -112,23 +113,21 @@ module airdnb::airdnb {
             description: utf8(description),
             votes_for: 0,
             votes_against: 0,
-            creator: tx_context::sender(ctx),
             voters: vector::empty(),
         };
         event::emit(ProposalCreated {
             id: object::id(&proposal),
             title: proposal.title,
             description: proposal.description,
-            creator: proposal.creator,
+            creator: tx_context::sender(ctx),
         });
         transfer::transfer(proposal, tx_context::sender(ctx));
     }
 
     // Helper function to calculate remaining nights
     public fun remaining_nights(nft: &BookingNFT, current_time_ms: u64): u64 {
-        let check_out_time_ms = nft.check_out_date * 1000;
-        if (current_time_ms < check_out_time_ms) {
-            (check_out_time_ms - current_time_ms) / 86400000 // Convert milliseconds to days
+        if (current_time_ms < nft.check_out_time_ms) {
+            (nft.check_out_time_ms - current_time_ms) / 86400000 // Convert milliseconds to days
         } else {
             0
         }
@@ -158,7 +157,7 @@ module airdnb::airdnb {
         });
 
         event::emit(ProposalUpdated {
-            proposal_id: object::id(proposal),
+            id: object::id(proposal),
             votes_for: proposal.votes_for,
             votes_against: proposal.votes_against,
         });

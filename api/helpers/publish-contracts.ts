@@ -3,15 +3,15 @@
 
 import { publishPackage } from '../sui-utils';
 
-/// A demo showing how we could publish the escrow contract
+/// A demo showing how we could publish the airdnb contract
 /// and our DEMO objects contract.
 ///
 /// We're publishing both as part of our demo.
 (async () => {
 	await publishPackage({
-		packagePath: __dirname + '/../../contracts/escrow',
+		packagePath: __dirname + '/../../contracts/airdnb',
 		network: 'testnet',
-		exportFileName: 'escrow-contract',
+		exportFileName: 'airdnb-contract',
 	});
 
 	await publishPackage({

@@ -6,8 +6,7 @@ import { EventId, SuiClient, SuiEvent, SuiEventFilter } from '@mysten/sui.js/cli
 import { CONFIG } from '../config';
 import { prisma } from '../db';
 import { getClient } from '../sui-utils';
-import { handleEscrowObjects } from './escrow-handler';
-import { handleLockObjects } from './locked-handler';
+import { handleAirdnbEvents } from './airdnb-handler';
 
 type SuiEventsCursor = EventId | null | undefined;
 
@@ -25,24 +24,14 @@ type EventTracker = {
 
 const EVENTS_TO_TRACK: EventTracker[] = [
 	{
-		type: `${CONFIG.SWAP_CONTRACT.packageId}::lock`,
+		type: `${CONFIG.AIRDNB_CONTRACT.packageId}::airdnb`,
 		filter: {
 			MoveEventModule: {
-				module: 'lock',
-				package: CONFIG.SWAP_CONTRACT.packageId,
+				module: 'airdnb',
+				package: CONFIG.AIRDNB_CONTRACT.packageId,
 			},
 		},
-		callback: handleLockObjects,
-	},
-	{
-		type: `${CONFIG.SWAP_CONTRACT.packageId}::shared`,
-		filter: {
-			MoveEventModule: {
-				module: 'shared',
-				package: CONFIG.SWAP_CONTRACT.packageId,
-			},
-		},
-		callback: handleEscrowObjects,
+		callback: handleAirdnbEvents,
 	},
 ];
 

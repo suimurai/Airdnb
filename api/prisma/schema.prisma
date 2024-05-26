@@ -5,44 +5,33 @@ generator client {
   provider = "prisma-client-js"
 }
 
-/// We can setup the provider to our database
-/// For this DEMO, we're using sqlite, which allows us to not
-/// have external dependencies.
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
 
-/// Our `Locked` objects list
-model Locked {
-  // Keeping an ID so we can use as a pagination cursor
-  // There's an issue with BigInt for sqlite, so we're using a plain ID.
+model BookingNFT {
   id Int @id @default(autoincrement())
   objectId String @unique
-  keyId String?
-  creator String?
-  itemId String?
-  deleted Boolean @default(false)
+  minter String
+  room String
+  nights Int
+  checkOutDate DateTime
 
-  @@index([creator])
-  @@index([deleted])
+  @@index([minter])
+  @@index([room])
 }
 
-/// Our swap objects list
-model Escrow {
-  // Keeping an ID so we can use as a pagination cursor
-  // There's an issue with BigInt for sqlite, so we're using a plain ID.
+model Proposal {
   id Int @id @default(autoincrement())
   objectId String @unique
-  sender String?
-  recipient String?
-  keyId String?
-  itemId String?
-  swapped Boolean @default(false)
-  cancelled Boolean @default(false)
+  title String
+  creator String
+  description String
+  votesFor Int @default(0)
+  votesAgainst Int @default(0)
   
-  @@index([recipient])
-  @@index([sender])
+  @@index([title])
 }
 
 /// Saves the latest cursor for a given key.

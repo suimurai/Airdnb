@@ -27,7 +27,7 @@ const createDemoLockedObjects = async (totalBears: number) => {
 		}
 
 		const [locked, key] = txb.moveCall({
-			target: `${CONFIG.SWAP_CONTRACT.packageId}::lock::lock`,
+			target: `${CONFIG.AIRDNB_CONTRACT.packageId}::lock::lock`,
 			arguments: [bear],
 			typeArguments: [DEMO_BEAR_TYPE],
 		});
@@ -35,7 +35,7 @@ const createDemoLockedObjects = async (totalBears: number) => {
 		// Let's unlock half of them, to catch some destroy events on our API.
 		if (i % 2 === 0) {
 			const item = txb.moveCall({
-				target: `${CONFIG.SWAP_CONTRACT.packageId}::lock::unlock`,
+				target: `${CONFIG.AIRDNB_CONTRACT.packageId}::lock::unlock`,
 				arguments: [locked, key],
 				typeArguments: [DEMO_BEAR_TYPE],
 			});

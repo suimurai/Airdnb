@@ -76,7 +76,7 @@ app.get('/escrows', async (req, res) => {
 	];
 
 	try {
-		const escrows = await prisma.escrow.findMany({
+		const escrows = await prisma.airdnb.findMany({
 			where: parseWhereStatement(req.query, acceptedQueries)!,
 			...parsePaginationForQuery(req.query),
 		});

@@ -38,7 +38,7 @@ const getOwnedLockedItems = async () => {
 
 	const res = await client.getOwnedObjects({
 		filter: {
-			StructType: `${CONFIG.SWAP_CONTRACT.packageId}::lock::Locked`,
+			StructType: `${CONFIG.AIRDNB_CONTRACT.packageId}::lock::Locked`,
 		},
 		options: {
 			showContent: true,
@@ -84,7 +84,7 @@ const createEscrows = async (total: number) => {
 		if (!tuple.bear.objectId) throw new Error('bear.objectId is not defined. Does not make sense!');
 
 		txb.moveCall({
-			target: `${CONFIG.SWAP_CONTRACT.packageId}::shared::create`,
+			target: `${CONFIG.AIRDNB_CONTRACT.packageId}::shared::create`,
 			arguments: [
 				txb.object(tuple.bear.objectId),
 				txb.pure.address(tuple.locked.key),
