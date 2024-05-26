@@ -30,6 +30,8 @@ export function Escrow({ bookingNFT }: { bookingNFT: ApiBookingNFTObject }) {
     <SuiObjectDisplay
       object={suiObject.data?.data!}
       placeholder={{
+	      // @ts-ignore-next-line
+        image_url: import.meta.env.VITE_BOOKING_PLACEHOLDER_IMAGE_URL,
         description
       }}
     >
