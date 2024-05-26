@@ -8,8 +8,8 @@ import { prisma } from '../db';
 type BookingNFTMinted = {
 	id: string;
 	room: string;
-	nights: number;
-	check_out_time_ms: number;
+	nights: string;
+	check_out_time_ms: string;
 	minter: string;
 };
 
@@ -22,8 +22,8 @@ type ProposalCreated = {
 
 type ProposalUpdated = {
 	id: string;
-	votes_for: number,
-	votes_against: number,
+	votes_for: string,
+	votes_against: string,
 };
 
 export const handleAirdnbEvents = async (events: SuiEvent[], type: string) => {
@@ -38,8 +38,8 @@ export const handleAirdnbEvents = async (events: SuiEvent[], type: string) => {
 			bookingUpdates[data.id] = {
 				objectId: data.id,
 				room: data.room,
-				nights: data.nights,
-				checkOutDate: new Date(data.check_out_time_ms),
+				nights: Number(data.nights),
+				checkOutDate: new Date(Number(data.check_out_time_ms)),
 				minter: data.minter
 			};
 			continue;
@@ -61,8 +61,8 @@ export const handleAirdnbEvents = async (events: SuiEvent[], type: string) => {
 			const data = event.parsedJson as ProposalUpdated;
 			proposalUpdates[data.id] = {
 				...proposalUpdates[data.id],
-				votesFor: data.votes_for,
-				votesAgainst: data.votes_against
+				votesFor: Number(data.votes_for),
+				votesAgainst: Number(data.votes_against)
 			};
 			continue;
 		}

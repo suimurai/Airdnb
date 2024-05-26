@@ -3,11 +3,12 @@
 import { readFileSync } from 'fs';
 
 import { Network } from './sui-utils';
+import { AirdnbContractConfig } from './types';
 
 /// We assume our config files are in the format: { "packageId": "0x..." }
-const parseConfigurationFile = (fileName: string) => {
+const parseConfigurationFile = <T>(fileName: string) => {
 	try {
-		return JSON.parse(readFileSync(`${fileName}.json`, 'utf8'));
+		return JSON.parse(readFileSync(`${fileName}.json`, 'utf8')) as T;
 	} catch (e) {
 		throw new Error(`Missing config file ${fileName}.json`);
 	}
@@ -23,5 +24,5 @@ export const CONFIG = {
 	POLLING_INTERVAL_MS: 1000,
 	DEFAULT_LIMIT: 50,
 	NETWORK: (process.env.NETWORK as Network) || 'testnet',
-	AIRDNB_CONTRACT: parseConfigurationFile('airdnb-contract'),
+	AIRDNB_CONTRACT: parseConfigurationFile<AirdnbContractConfig>('airdnb-contract'),
 };

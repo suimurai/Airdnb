@@ -9,14 +9,8 @@ import { publishPackage } from '../sui-utils';
 /// We're publishing both as part of our demo.
 (async () => {
 	await publishPackage({
-		packagePath: __dirname + '/../../contracts/airdnb',
+		packagePath: __dirname + '/../../contracts',
 		network: 'testnet',
 		exportFileName: 'airdnb-contract',
-	});
-
-	await publishPackage({
-		packagePath: __dirname + '/../../contracts/demo',
-		network: 'testnet',
-		exportFileName: 'demo-contract',
 	});
 })();

@@ -9,6 +9,7 @@ import { getFullnodeUrl, SuiClient } from '@mysten/sui.js/client';
 import { Ed25519Keypair } from '@mysten/sui.js/keypairs/ed25519';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { fromB64 } from '@mysten/sui.js/utils';
+import { AirdnbContractConfig } from './types';
 
 export type Network = 'mainnet' | 'testnet' | 'devnet' | 'localnet';
 
@@ -92,14 +93,19 @@ export const publishPackage = async ({
 	const results = await signAndExecute(txb, network);
 
 	// @ts-ignore-next-line
-	const packageId = results.objectChanges?.find((x) => x.type === 'published')?.packageId;
+	const packageId:string = results.objectChanges?.find((x) => x.type === 'published')?.packageId ?? '';
 
+	const airdnbContractConfig : AirdnbContractConfig = {
+		packageId,
+		// @ts-ignore-next-line
+		"adminCap": results.objectChanges?.find((x) => x.objectType === `${packageId}::airdnb::AdminCap`)?.objectId ?? '',
+		// @ts-ignore-next-line
+		"publisher":results.objectChanges?.find((x) => x.objectType === '0x2::package::Publisher')?.objectId ?? '',
+	}
 	// save to an env file
 	writeFileSync(
 		`${exportFileName}.json`,
-		JSON.stringify({
-			packageId,
-		}),
+		JSON.stringify(airdnbContractConfig),
 		{ encoding: 'utf8', flag: 'w' },
 	);
 };
