@@ -1,6 +1,7 @@
 module airdnb::airdnb {
     use sui::package;
     use sui::display;
+    use sui::event;
     use std::string::{utf8, String};
 
     // Structure representing a Booking NFT
@@ -19,6 +20,7 @@ module airdnb::airdnb {
     // Structure representing a Proposal
     public struct Proposal has key, store {
         id: UID,
+        title: String,
         description: String,
         votes_for: u64,
         votes_against: u64,
@@ -28,6 +30,37 @@ module airdnb::airdnb {
 
     // Witness
     public struct AIRDNB has drop {}
+
+    // Event: BookingNFTMinted
+    public struct BookingNFTMinted has drop, copy {
+        id: ID,
+        room: String,
+        nights: u64,
+        check_out_date: u64,
+    }
+
+    // Event: ProposalCreated
+    public struct ProposalCreated has drop, copy {
+        id: ID,
+        title: String,
+        description: String,
+        creator: address,
+    }
+
+    // Event: VoteCast
+    public struct VoteCast has drop, copy {
+        proposal_id: ID,
+        voter: address,
+        vote_for: bool,
+        vote_weight: u64,
+    }
+
+    // Event: ProposalUpdated
+    public struct ProposalUpdated has drop, copy {
+        proposal_id: ID,
+        votes_for: u64,
+        votes_against: u64,
+    }
 
     // Init function to initialize the contract and assign admin capability to the owner
     fun init(witness: AIRDNB, ctx: &mut TxContext) {
@@ -56,24 +89,38 @@ module airdnb::airdnb {
 
     // Function to mint a new Booking NFT
     public fun mint(_: &AdminCap, room: vector<u8>, nights: u64, check_out_date: u64, ctx: &mut TxContext): BookingNFT {
-        BookingNFT {
+        let nft = BookingNFT {
             id: object::new(ctx),
             room: utf8(room),
             nights,
             check_out_date,
-        }
+        };
+        event::emit(BookingNFTMinted {
+            id: object::id(&nft),
+            room: nft.room,
+            nights: nft.nights,
+            check_out_date: nft.check_out_date,
+        });
+        nft
     }
 
     // Function to create a proposal
-    public entry fun create_proposal(description: vector<u8>, ctx: &mut TxContext) {
+    public entry fun create_proposal(title: vector<u8>, description: vector<u8>, ctx: &mut TxContext) {
         let proposal = Proposal {
             id: object::new(ctx),
+            title: utf8(title),
             description: utf8(description),
             votes_for: 0,
             votes_against: 0,
             creator: tx_context::sender(ctx),
             voters: vector::empty(),
         };
+        event::emit(ProposalCreated {
+            id: object::id(&proposal),
+            title: proposal.title,
+            description: proposal.description,
+            creator: proposal.creator,
+        });
         transfer::transfer(proposal, tx_context::sender(ctx));
     }
 
@@ -102,6 +149,19 @@ module airdnb::airdnb {
         };
 
         vector::push_back(&mut proposal.voters, object::id(nft));
+
+        event::emit(VoteCast {
+            proposal_id: object::id(proposal),
+            voter: tx_context::sender(ctx),
+            vote_for,
+            vote_weight,
+        });
+
+        event::emit(ProposalUpdated {
+            proposal_id: object::id(proposal),
+            votes_for: proposal.votes_for,
+            votes_against: proposal.votes_against,
+        });
     }
 
     // Function to get the voting results (for simplicity)
