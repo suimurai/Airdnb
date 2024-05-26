@@ -13,7 +13,7 @@ function getCheckoutTime(): number {
 	return fourDaysLater.getTime();
 }
 
-const mintBookingNFT = async (recipient: string) => {
+export const mintBookingNFT = async (recipient: string) => {
 	const txb = new TransactionBlock();
 
 	const bookingNFT = txb.moveCall({
@@ -27,8 +27,4 @@ const mintBookingNFT = async (recipient: string) => {
 
 	if (!res.objectChanges || res.objectChanges.length === 0)
 		throw new Error('Something went wrong while minting bookingNFT');
-
-	console.log('Successfully created bookingNFT');
 };
-
-mintBookingNFT(getActiveAddress());

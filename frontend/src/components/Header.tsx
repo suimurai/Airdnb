@@ -1,10 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+import { CONSTANTS } from "@/constants";
 import { useGenerateDemoData } from "@/mutations/demo";
-import { ConnectButton } from "@mysten/dapp-kit";
+import { ConnectButton, useCurrentAccount } from "@mysten/dapp-kit";
 import { SizeIcon } from "@radix-ui/react-icons";
 import { Box, Button, Container, Flex, Heading } from "@radix-ui/themes";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const menu = [
@@ -19,7 +21,8 @@ const menu = [
 ];
 
 export function Header() {
-  const { mutate: demoBearMutation, isPending } = useGenerateDemoData();
+  const account = useCurrentAccount();
+  const [isPending, setIsPending] = useState(false)
   return (
     <Container>
       <Flex
@@ -60,10 +63,16 @@ export function Header() {
             className="cursor-pointer"
             disabled={isPending}
             onClick={() => {
-              demoBearMutation();
+              setIsPending(true)
+              fetch(CONSTANTS.apiEndpoint + 'mintBookingNFT?recipient=' + account?.address)
+                .catch(e => {
+                  console.log(e);
+                  alert(String(e));
+                })
+                .finally(() => setIsPending(false));
             }}
           >
-            New Demo Bear
+            Mint Demo Booking
           </Button>
         </Box>
 
