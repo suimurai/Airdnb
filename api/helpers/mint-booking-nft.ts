@@ -13,7 +13,7 @@ function getCheckoutTime(): number {
 	return fourDaysLater.getTime();
 }
 
-const mintDemoBookingNFT = async () => {
+const mintBookingNFT = async () => {
 	const txb = new TransactionBlock();
 
 	const bookingNFT = txb.moveCall({
@@ -26,9 +26,9 @@ const mintDemoBookingNFT = async () => {
 	const res = await signAndExecute(txb, ACTIVE_NETWORK);
 
 	if (!res.objectChanges || res.objectChanges.length === 0)
-		throw new Error('Something went wrong while minting demo bookingNFT');
+		throw new Error('Something went wrong while minting bookingNFT');
 
-	console.log('Successfully created demo bookingNFT');
+	console.log('Successfully created bookingNFT');
 };
 
-mintDemoBookingNFT();
+mintBookingNFT();
