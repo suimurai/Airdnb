@@ -25,6 +25,10 @@ export const mintBookingNFT = async (recipient: string) => {
 
 	const res = await signAndExecute(txb, ACTIVE_NETWORK);
 
-	if (!res.objectChanges || res.objectChanges.length === 0)
+	if (!res.objectChanges || res.objectChanges.length === 0) {
+		console.log(res)
 		throw new Error('Something went wrong while minting bookingNFT');
+	}
+
+	return res;
 };

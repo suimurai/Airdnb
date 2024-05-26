@@ -110,7 +110,7 @@ module airdnb::airdnb {
     }
 
     // Function to create a proposal
-    public entry fun create_proposal(title: vector<u8>, description: vector<u8>, ctx: &mut TxContext) {
+    public entry fun create_proposal(_: &BookingNFT, title: vector<u8>, description: vector<u8>, ctx: &mut TxContext) {
         let proposal = Proposal {
             id: object::new(ctx),
             title: utf8(title),
