@@ -14,15 +14,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Navigate to="escrows" replace />,
-      },
-      {
-        path: "escrows",
         element: <EscrowDashboard />,
-      },
-      {
-        path: "locked",
-        element: <LockedDashboard />,
       },
     ],
   },

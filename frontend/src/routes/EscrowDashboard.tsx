@@ -12,6 +12,16 @@ export function EscrowDashboard() {
   const account = useCurrentAccount();
   const tabs = [
     {
+      name: "Proposals",
+      component: () => (
+        <LockedList
+          params={{}}
+          enableSearch
+        />
+      ),
+      tooltip: "Proposals",
+    },
+    {
       name: "My Bookings",
       component: () => (
         <EscrowList
@@ -20,26 +30,7 @@ export function EscrowDashboard() {
           }}
         />
       ),
-      tooltip: "Escrows requested for your locked objects.",
-    },
-    {
-      name: "Browse Locked Objects",
-      component: () => (
-        <LockedList
-          params={{}}
-          enableSearch
-        />
-      ),
-      tooltip: "Browse locked objects you can trade for.",
-    },
-    {
-      name: "My Pending Requests",
-      component: () => (
-        <EscrowList
-          params={{}}
-        />
-      ),
-      tooltip: "Escrows you have initiated for third party locked objects.",
+      tooltip: "My Bookings",
     },
   ];
 
