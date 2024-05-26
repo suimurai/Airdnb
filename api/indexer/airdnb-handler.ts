@@ -10,6 +10,7 @@ type BookingNFTMinted = {
 	room: string;
 	nights: string;
 	check_out_time_ms: string;
+	recipient: string;
 	minter: string;
 };
 
@@ -40,6 +41,7 @@ export const handleAirdnbEvents = async (events: SuiEvent[], type: string) => {
 				room: data.room,
 				nights: Number(data.nights),
 				checkOutDate: new Date(Number(data.check_out_time_ms)),
+				recipient: data.recipient,
 				minter: data.minter
 			};
 			continue;

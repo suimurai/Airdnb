@@ -50,7 +50,7 @@ export function useAcceptEscrowMutation() {
       }
 
       const item = txb.moveCall({
-        target: `${CONSTANTS.escrowContract.packageId}::shared::swap`,
+        target: `${CONSTANTS.airdnbContract.packageId}::shared::swap`,
         arguments: [
           txb.object(escrow.objectId),
           txb.object(escrow.keyId),
@@ -66,7 +66,7 @@ export function useAcceptEscrowMutation() {
 
     onSuccess: () => {
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: [QueryKey.Escrow] });
+        queryClient.invalidateQueries({ queryKey: [QueryKey.BookingNFT] });
       }, 1_000);
     },
   });
@@ -93,7 +93,7 @@ export function useCancelEscrowMutation() {
       const txb = new TransactionBlock();
 
       const item = txb.moveCall({
-        target: `${CONSTANTS.escrowContract.packageId}::shared::return_to_sender`,
+        target: `${CONSTANTS.airdnbContract.packageId}::shared::return_to_sender`,
         arguments: [txb.object(escrow.objectId)],
         typeArguments: [suiObject?.type!],
       });
@@ -105,7 +105,7 @@ export function useCancelEscrowMutation() {
 
     onSuccess: () => {
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: [QueryKey.Escrow] });
+        queryClient.invalidateQueries({ queryKey: [QueryKey.BookingNFT] });
       }, 1_000);
     },
   });
@@ -131,7 +131,7 @@ export function useCreateEscrowMutation() {
 
       const txb = new TransactionBlock();
       txb.moveCall({
-        target: `${CONSTANTS.escrowContract.packageId}::shared::create`,
+        target: `${CONSTANTS.airdnbContract.packageId}::shared::create`,
         arguments: [
           txb.object(object.objectId!),
           txb.pure.id(locked.keyId),

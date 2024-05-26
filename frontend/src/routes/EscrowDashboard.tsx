@@ -12,13 +12,11 @@ export function EscrowDashboard() {
   const account = useCurrentAccount();
   const tabs = [
     {
-      name: "Requested Escrows",
+      name: "My Bookings",
       component: () => (
         <EscrowList
           params={{
             recipient: account?.address,
-            swapped: "false",
-            cancelled: "false",
           }}
         />
       ),
@@ -28,9 +26,7 @@ export function EscrowDashboard() {
       name: "Browse Locked Objects",
       component: () => (
         <LockedList
-          params={{
-            deleted: "false",
-          }}
+          params={{}}
           enableSearch
         />
       ),
@@ -40,11 +36,7 @@ export function EscrowDashboard() {
       name: "My Pending Requests",
       component: () => (
         <EscrowList
-          params={{
-            sender: account?.address,
-            swapped: "false",
-            cancelled: "false",
-          }}
+          params={{}}
         />
       ),
       tooltip: "Escrows you have initiated for third party locked objects.",

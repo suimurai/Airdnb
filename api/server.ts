@@ -6,8 +6,11 @@ import express from 'express';
 
 import { prisma } from './db';
 import {
+	WhereParam,
+	WhereParamTypes,
 	formatPaginatedResponse,
 	parsePaginationForQuery,
+	parseWhereStatement,
 } from './utils/api-queries';
 
 const app = express();
@@ -20,8 +23,15 @@ app.get('/', async (_req, res) => {
 });
 
 app.get('/bookingNFTs', async (req, res) => {
+	const acceptedQueries: WhereParam[] = [
+		{
+			key: 'recipient',
+			type: WhereParamTypes.STRING,
+		},
+	];
 	try {
 		const escrows = await prisma.bookingNFT.findMany({
+			where: parseWhereStatement(req.query, acceptedQueries)!,
 			...parsePaginationForQuery(req.query),
 		});
 		return res.send(formatPaginatedResponse(escrows));

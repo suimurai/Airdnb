@@ -1,6 +1,6 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
-import { SuiObjectData } from "@mysten/sui.js/client";
+import { DisplayFieldsResponse, SuiObjectData } from "@mysten/sui.js/client";
 import { Avatar, Box, Card, Flex, Inset, Text } from "@radix-ui/themes";
 import { ReactNode } from "react";
 import { ExplorerLink } from "./ExplorerLink";
@@ -18,7 +18,9 @@ export function SuiObjectDisplay({
   children,
   label,
   labelClasses,
+  placeholder
 }: {
+  placeholder?: DisplayFieldsResponse["data"],
   object?: SuiObjectData;
   children?: ReactNode | ReactNode[];
   label?: string;
@@ -33,16 +35,16 @@ export function SuiObjectDisplay({
         </div>
       )}
       <Flex gap="3" align="center">
-        <Avatar size="6" src={display?.image_url} radius="full" fallback="O" />
+        <Avatar size="6" src={display?.image_url || placeholder?.image_url} radius="full" fallback="O" />
         <Box className="grid grid-cols-1">
           <Text className="text-xs">
             <ExplorerLink id={object?.objectId || ""} isAddress={false} />
           </Text>
           <Text as="div" size="2" weight="bold">
-            {display?.name || display?.title || "-"}
+            {display?.name || display?.title || placeholder?.title || "-"}
           </Text>
           <Text as="div" size="2" color="gray">
-            {display?.description || "No description for this object."}
+            {display?.description || placeholder?.description || "No description for this object."}
           </Text>
         </Box>
       </Flex>

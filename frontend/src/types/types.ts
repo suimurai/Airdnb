@@ -9,6 +9,15 @@ export type ApiLockedObject = {
   deleted: boolean;
 };
 
+export type ApiBookingNFTObject = {
+  id: number;
+  objectId: string;
+  minter: string;
+  room: string;
+  nights: number;
+  checkOutDate: string;
+};
+
 export type ApiEscrowObject = {
   id: string;
   objectId: string;
@@ -18,6 +27,10 @@ export type ApiEscrowObject = {
   itemId: string;
   swapped: boolean;
   cancelled: boolean;
+};
+
+export type BookingNFTListingQuery = {
+  recipient?: string;
 };
 
 export type EscrowListingQuery = {

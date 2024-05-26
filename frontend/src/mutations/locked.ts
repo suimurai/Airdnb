@@ -23,7 +23,7 @@ export function useLockObjectMutation() {
       const txb = new TransactionBlock();
 
       const [locked, key] = txb.moveCall({
-        target: `${CONSTANTS.escrowContract.packageId}::lock::lock`,
+        target: `${CONSTANTS.airdnbContract.packageId}::lock::lock`,
         arguments: [txb.object(object.objectId)],
         typeArguments: [object.type!],
       });
@@ -76,7 +76,7 @@ export function useUnlockMutation() {
       const txb = new TransactionBlock();
 
       const item = txb.moveCall({
-        target: `${CONSTANTS.escrowContract.packageId}::lock::unlock`,
+        target: `${CONSTANTS.airdnbContract.packageId}::lock::unlock`,
         typeArguments: [suiObject.type!],
         arguments: [txb.object(lockedId), txb.object(keyId)],
       });

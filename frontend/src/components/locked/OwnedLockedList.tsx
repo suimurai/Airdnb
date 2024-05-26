@@ -18,7 +18,7 @@ export function OwnedLockedList() {
       "getOwnedObjects",
       {
         filter: {
-          StructType: CONSTANTS.escrowContract.lockedType,
+          StructType: CONSTANTS.airdnbContract.lockedType,
         },
         owner: account?.address!,
         options: {

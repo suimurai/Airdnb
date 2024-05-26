@@ -9,7 +9,7 @@ import { OwnedLockedList } from "@/components/locked/OwnedLockedList";
 export function LockedDashboard() {
   const tabs = [
     {
-      name: "My Locked Objects",
+      name: "My BookingNFTs",
       component: () => <OwnedLockedList />,
     },
     {

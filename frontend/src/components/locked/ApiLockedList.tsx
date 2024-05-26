@@ -73,7 +73,7 @@ export function LockedList({
   const suiObjects = () => {
     if (lockedId) {
       if (
-        !searchData?.data?.type?.startsWith(CONSTANTS.escrowContract.lockedType)
+        !searchData?.data?.type?.startsWith(CONSTANTS.airdnbContract.lockedType)
       )
         return [];
       return [searchData?.data!];

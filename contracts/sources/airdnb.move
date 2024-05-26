@@ -10,6 +10,7 @@ module airdnb::airdnb {
         room: String,
         nights: u64,
         check_out_time_ms: u64,
+        recipient: address,
     }
 
     // Structure representing the admin capability
@@ -36,6 +37,7 @@ module airdnb::airdnb {
         room: String,
         nights: u64,
         check_out_time_ms: u64,
+        recipient: address,
         minter: address,
     }
 
@@ -88,18 +90,20 @@ module airdnb::airdnb {
     }
 
     // Function to mint a new Booking NFT
-    public fun mint(_: &AdminCap, room: vector<u8>, nights: u64, check_out_time_ms: u64, ctx: &mut TxContext): BookingNFT {
+    public fun mint(_: &AdminCap, room: vector<u8>, recipient: address, nights: u64, check_out_time_ms: u64, ctx: &mut TxContext): BookingNFT {
         let nft = BookingNFT {
             id: object::new(ctx),
             room: utf8(room),
             nights,
             check_out_time_ms,
+            recipient,
         };
         event::emit(BookingNFTMinted {
             id: object::id(&nft),
             room: nft.room,
             nights: nft.nights,
             check_out_time_ms: nft.check_out_time_ms,
+            recipient,
             minter: tx_context::sender(ctx),
         });
         nft

@@ -16,6 +16,7 @@ model BookingNFT {
   minter String
   room String
   nights Int
+  recipient String
   checkOutDate DateTime
 
   @@index([minter])

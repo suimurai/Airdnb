@@ -13,15 +13,15 @@ function getCheckoutTime(): number {
 	return fourDaysLater.getTime();
 }
 
-const mintBookingNFT = async () => {
+const mintBookingNFT = async (recipient: string) => {
 	const txb = new TransactionBlock();
 
 	const bookingNFT = txb.moveCall({
 		target: `${CONFIG.AIRDNB_CONTRACT.packageId}::airdnb::mint`,
-		arguments: [txb.object(CONFIG.AIRDNB_CONTRACT.adminCap), txb.pure.string(`Room 301`), txb.pure.u64(7), txb.pure.u64(getCheckoutTime())],
+		arguments: [txb.object(CONFIG.AIRDNB_CONTRACT.adminCap), txb.pure.string(`Room 301`), txb.pure.address(recipient), txb.pure.u64(7), txb.pure.u64(getCheckoutTime())],
 	});
 
-	txb.transferObjects([bookingNFT], txb.pure.address(getActiveAddress()));
+	txb.transferObjects([bookingNFT], txb.pure.address(recipient));
 
 	const res = await signAndExecute(txb, ACTIVE_NETWORK);
 
@@ -31,4 +31,4 @@ const mintBookingNFT = async () => {
 	console.log('Successfully created bookingNFT');
 };
 
-mintBookingNFT();
+mintBookingNFT(getActiveAddress());

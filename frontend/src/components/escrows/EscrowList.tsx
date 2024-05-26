@@ -6,7 +6,7 @@ import { CONSTANTS, QueryKey } from "@/constants";
 import { Escrow } from "./Escrow";
 import { InfiniteScrollArea } from "@/components/InfiniteScrollArea";
 import { constructUrlSearchParams, getNextPageParam } from "@/utils/helpers";
-import { ApiEscrowObject, EscrowListingQuery } from "@/types/types";
+import { ApiBookingNFTObject, BookingNFTListingQuery } from "@/types/types";
 import { useState } from "react";
 import { TextField } from "@radix-ui/themes";
 
@@ -19,23 +19,23 @@ export function EscrowList({
   params,
   enableSearch,
 }: {
-  params: EscrowListingQuery;
+  params: BookingNFTListingQuery;
   enableSearch?: boolean;
 }) {
-  const [escrowId, setEscrowId] = useState("");
+  const [objectId, setObjectId] = useState("");
 
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery({
       initialPageParam: null,
-      queryKey: [QueryKey.Escrow, params, escrowId],
+      queryKey: [QueryKey.BookingNFT, params, objectId],
       queryFn: async ({ pageParam }) => {
         const data = await fetch(
           CONSTANTS.apiEndpoint +
-            "escrows" +
+            "bookingNFTs" +
             constructUrlSearchParams({
               ...params,
               ...(pageParam ? { cursor: pageParam as string } : {}),
-              ...(escrowId ? { objectId: escrowId } : {}),
+              ...(objectId ? { objectId } : {}),
             }),
         );
         return data.json();
@@ -50,8 +50,8 @@ export function EscrowList({
         <TextField.Root>
           <TextField.Input
             placeholder="Search by escrow id"
-            value={escrowId}
-            onChange={(e) => setEscrowId(e.target.value)}
+            value={objectId}
+            onChange={(e) => setObjectId(e.target.value)}
           />
         </TextField.Root>
       )}
@@ -60,8 +60,8 @@ export function EscrowList({
         hasNextPage={hasNextPage}
         loading={isFetchingNextPage || isLoading}
       >
-        {data?.map((escrow: ApiEscrowObject) => (
-          <Escrow key={escrow.itemId} escrow={escrow} />
+        {data?.map((bookingNFT: ApiBookingNFTObject) => (
+          <Escrow key={bookingNFT.id} bookingNFT={bookingNFT} />
         ))}
       </InfiniteScrollArea>
     </div>

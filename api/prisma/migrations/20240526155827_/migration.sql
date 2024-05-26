@@ -5,6 +5,7 @@ CREATE TABLE "BookingNFT" (
     "minter" TEXT NOT NULL,
     "room" TEXT NOT NULL,
     "nights" INTEGER NOT NULL,
+    "recipient" TEXT NOT NULL,
     "checkOutDate" DATETIME NOT NULL
 );
 
