@@ -31,6 +31,7 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
       <div className="flex gap-3 flex-wrap">
         <p className="text-sm flex-shrink-0 flex items-center gap-2">
           <ExplorerLink id={proposal.objectId} isAddress={false} />
+          <span className="text-[green]">+{proposal.votesFor}</span> <span className="text-[red]">-{proposal.votesAgainst}</span>
         </p>
       </div>
     </SuiObjectDisplay>
