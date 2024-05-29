@@ -49,9 +49,10 @@ module airdnb::airdnb {
         creator: address,
     }
 
-    // Event: VoteCast
-    public struct VoteCast has drop, copy {
+    // Event: VoteCasted
+    public struct VoteCasted has drop, copy {
         proposal_id: ID,
+        voter_booking_nft_id: ID,
         voter: address,
         vote_for: bool,
         vote_weight: u64,
@@ -125,7 +126,7 @@ module airdnb::airdnb {
             description: proposal.description,
             creator: tx_context::sender(ctx),
         });
-        transfer::transfer(proposal, tx_context::sender(ctx));
+        transfer::share_object(proposal);
     }
 
     // Helper function to calculate remaining nights
@@ -153,8 +154,9 @@ module airdnb::airdnb {
 
         vector::push_back(&mut proposal.voters, object::id(nft));
 
-        event::emit(VoteCast {
+        event::emit(VoteCasted {
             proposal_id: object::id(proposal),
+            voter_booking_nft_id: object::id(nft),
             voter: tx_context::sender(ctx),
             vote_for,
             vote_weight,

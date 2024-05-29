@@ -11,12 +11,12 @@ datasource db {
 }
 
 model BookingNFT {
-  id Int @id @default(autoincrement())
-  objectId String @unique
-  minter String
-  room String
-  nights Int
-  recipient String
+  id           Int      @id @default(autoincrement())
+  objectId     String   @unique
+  minter       String
+  room         String
+  nights       Int
+  recipient    String
   checkOutDate DateTime
 
   @@index([minter])
@@ -24,20 +24,29 @@ model BookingNFT {
 }
 
 model Proposal {
-  id Int @id @default(autoincrement())
-  objectId String @unique
-  title String
-  creator String
-  description String
-  votesFor Int @default(0)
-  votesAgainst Int @default(0)
-  
+  id           Int    @id @default(autoincrement())
+  objectId     String @unique
+  title        String
+  creator      String
+  description  String
+  votesFor     Int    @default(0)
+  votesAgainst Int    @default(0)
+
   @@index([title])
+}
+
+model Vote {
+  id                Int     @id @default(autoincrement())
+  proposalId        String
+  voterBookingNFTId String
+  voter             String
+  voteFor           Boolean
+  voteWeight        Int
 }
 
 /// Saves the latest cursor for a given key.
 model Cursor {
-  id String @id
+  id       String @id
   eventSeq String
   txDigest String
 }
