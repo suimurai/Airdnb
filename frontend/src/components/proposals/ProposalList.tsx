@@ -6,15 +6,11 @@ import { CONSTANTS, QueryKey } from "@/constants";
 import { Proposal } from "./Proposal";
 import { InfiniteScrollArea } from "@/components/InfiniteScrollArea";
 import { constructUrlSearchParams, getNextPageParam } from "@/utils/helpers";
-import {
-  ApiBookingNFTObject,
-  ApiProposalObject,
-  BookingNFTListingQuery,
-} from "@/types/types";
-import { useMemo, useState } from "react";
+import { ApiProposalObject, BookingNFTListingQuery } from "@/types/types";
+import { useState } from "react";
 import { Button, TextField } from "@radix-ui/themes";
-import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useCreateProposal } from "@/mutations/proposal.ts";
+import { useMyBookingNFTsContext } from "@/context/myBookingNFTsContext.tsx";
 
 /**
  * A component that fetches and displays a list of escrows.
@@ -49,33 +45,7 @@ export function ProposalList({
       select: (data) => data.pages.flatMap((page) => page.data),
       getNextPageParam,
     });
-
-  const account = useCurrentAccount();
-  const paramsBooking: BookingNFTListingQuery = {
-    recipient: account?.address,
-  };
-  const { data: bookingNFTs } = useInfiniteQuery({
-    initialPageParam: null,
-    queryKey: [QueryKey.BookingNFT, params, ""],
-    queryFn: async ({ pageParam }) => {
-      const data = await fetch(
-        CONSTANTS.apiEndpoint +
-          "bookingNFTs" +
-          constructUrlSearchParams({
-            ...paramsBooking,
-            ...(pageParam ? { cursor: pageParam as string } : {}),
-          }),
-      );
-      return data.json();
-    },
-    select: (data) => data.pages.flatMap((page) => page.data),
-    getNextPageParam,
-  });
-  const bookingNFT: ApiBookingNFTObject | undefined = useMemo(() => {
-    return bookingNFTs && bookingNFTs.length
-      ? bookingNFTs[bookingNFTs.length - 1]
-      : undefined;
-  }, []);
+  const { myLastBookingNFT } = useMyBookingNFTsContext();
   const { mutate: createProposal, isPending: pendingProposalCreation } =
     useCreateProposal();
 
@@ -91,12 +61,12 @@ export function ProposalList({
         </TextField.Root>
       )}
       <Button
-        disabled={!bookingNFT || pendingProposalCreation}
+        disabled={!myLastBookingNFT || pendingProposalCreation}
         className="cursor-pointer mt-5"
         onClick={() => {
-          if (bookingNFT) {
+          if (myLastBookingNFT) {
             createProposal({
-              bookingNFT,
+              bookingNFT: myLastBookingNFT,
             });
           }
         }}

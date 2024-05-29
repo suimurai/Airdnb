@@ -1,20 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { useCurrentAccount, useSuiClientQuery } from "@mysten/dapp-kit";
+import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { SuiObjectDisplay } from "@/components/SuiObjectDisplay";
 import { ExplorerLink } from "../ExplorerLink";
-import {
-  ApiBookingNFTObject,
-  ApiProposalObject,
-  BookingNFTListingQuery,
-} from "@/types/types";
+import { ApiProposalObject } from "@/types/types";
 import { Button } from "@radix-ui/themes";
 import { useVoteOnProposal } from "@/mutations/proposal.ts";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { CONSTANTS, QueryKey } from "@/constants.ts";
-import { constructUrlSearchParams, getNextPageParam } from "@/utils/helpers.ts";
 import { useMemo } from "react";
+import { useMyBookingNFTsContext } from "@/context/myBookingNFTsContext.tsx";
 
 /**
  * A component that displays an escrow and allows the user to accept or cancel it.
@@ -24,30 +18,7 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
   const { mutate: vote, isPending: pendingVoteSubmission } =
     useVoteOnProposal();
 
-  const account = useCurrentAccount();
-  const params: BookingNFTListingQuery = {
-    recipient: account?.address,
-  };
-  const { data } = useInfiniteQuery({
-    initialPageParam: null,
-    queryKey: [QueryKey.BookingNFT, params, ""],
-    queryFn: async ({ pageParam }) => {
-      const data = await fetch(
-        CONSTANTS.apiEndpoint +
-          "bookingNFTs" +
-          constructUrlSearchParams({
-            ...params,
-            ...(pageParam ? { cursor: pageParam as string } : {}),
-          }),
-      );
-      return data.json();
-    },
-    select: (data) => data.pages.flatMap((page) => page.data),
-    getNextPageParam,
-  });
-  const bookingNFT: ApiBookingNFTObject | undefined = useMemo(() => {
-    return data && data.length ? data[data.length - 1] : undefined;
-  }, []);
+  const { myLastBookingNFT } = useMyBookingNFTsContext();
   const suiObject = useSuiClientQuery("getObject", {
     id: proposal?.objectId,
     options: {
@@ -57,8 +28,8 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
   });
 
   const disabled = useMemo(
-    () => !bookingNFT || pendingVoteSubmission,
-    [bookingNFT, pendingVoteSubmission],
+    () => !myLastBookingNFT || pendingVoteSubmission,
+    [myLastBookingNFT, pendingVoteSubmission],
   );
 
   return (
@@ -81,10 +52,10 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
           }`}
           disabled={disabled}
           onClick={() => {
-            if (bookingNFT) {
+            if (myLastBookingNFT) {
               vote({
                 proposal,
-                bookingNFT,
+                bookingNFT: myLastBookingNFT,
                 voteFor: true,
               });
             }
@@ -101,10 +72,10 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
           }`}
           disabled={disabled}
           onClick={() => {
-            if (bookingNFT) {
+            if (myLastBookingNFT) {
               vote({
                 proposal,
-                bookingNFT,
+                bookingNFT: myLastBookingNFT,
                 voteFor: false,
               });
             }

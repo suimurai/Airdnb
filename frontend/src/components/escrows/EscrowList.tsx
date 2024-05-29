@@ -1,14 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { CONSTANTS, QueryKey } from "@/constants";
 import { Escrow } from "./Escrow";
 import { InfiniteScrollArea } from "@/components/InfiniteScrollArea";
-import { constructUrlSearchParams, getNextPageParam } from "@/utils/helpers";
-import { ApiBookingNFTObject, BookingNFTListingQuery } from "@/types/types";
+import { BookingNFTListingQuery } from "@/types/types";
 import { useState } from "react";
 import { TextField } from "@radix-ui/themes";
+import { useMyBookingNFTsContext } from "@/context/myBookingNFTsContext.tsx";
 
 /**
  * A component that fetches and displays a list of escrows.
@@ -24,25 +22,8 @@ export function EscrowList({
 }) {
   const [objectId, setObjectId] = useState("");
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
-    useInfiniteQuery({
-      initialPageParam: null,
-      queryKey: [QueryKey.BookingNFT, params, objectId],
-      queryFn: async ({ pageParam }) => {
-        const data = await fetch(
-          CONSTANTS.apiEndpoint +
-            "bookingNFTs" +
-            constructUrlSearchParams({
-              ...params,
-              ...(pageParam ? { cursor: pageParam as string } : {}),
-              ...(objectId ? { objectId } : {}),
-            }),
-        );
-        return data.json();
-      },
-      select: (data) => data.pages.flatMap((page) => page.data),
-      getNextPageParam,
-    });
+  const { myBookingNFTs, isLoading, isFetchingNextPage } =
+    useMyBookingNFTsContext();
 
   return (
     <div>
@@ -56,11 +37,11 @@ export function EscrowList({
         </TextField.Root>
       )}
       <InfiniteScrollArea
-        loadMore={() => fetchNextPage()}
-        hasNextPage={hasNextPage}
+        loadMore={() => {}}
+        hasNextPage={false}
         loading={isFetchingNextPage || isLoading}
       >
-        {data?.map((bookingNFT: ApiBookingNFTObject) => (
+        {myBookingNFTs?.map((bookingNFT) => (
           <Escrow key={bookingNFT.id} bookingNFT={bookingNFT} />
         ))}
       </InfiniteScrollArea>

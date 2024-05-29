@@ -8,15 +8,16 @@ import "./styles/base.css";
 
 import { getFullnodeUrl } from "@mysten/sui.js/client";
 import {
+  createNetworkConfig,
   SuiClientProvider,
   WalletProvider,
-  createNetworkConfig,
 } from "@mysten/dapp-kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Theme } from "@radix-ui/themes";
 import { router } from "@/routes/index.tsx";
 
 import { RouterProvider } from "react-router-dom";
+import { MyBookingNFTsProvider } from "@/context/myBookingNFTsContext.tsx";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
           <WalletProvider autoConnect>
-            <RouterProvider router={router} />
+            <MyBookingNFTsProvider>
+              <RouterProvider router={router} />
+            </MyBookingNFTsProvider>
           </WalletProvider>
         </SuiClientProvider>
       </QueryClientProvider>
