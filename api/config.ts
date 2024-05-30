@@ -31,4 +31,5 @@ export const CONFIG = {
     adminCap: process.env.AIRDNB_CONTRACT_ADMIN_CAP,
     publisher: process.env.AIRDNB_CONTRACT_PUBLISHER,
   },
+  PORT: process.env.PORT ? Number(process.env.PORT) : 3000,
 };

@@ -14,6 +14,7 @@ import {
 } from "./utils/api-queries";
 import { mintBookingNFT } from "./helpers/mint-booking-nft";
 import { getActiveAddress } from "./sui-utils";
+import { CONFIG } from "./config";
 
 const app = express();
 app.use(cors());
@@ -89,6 +90,6 @@ app.get("/votes", async (req, res) => {
   }
 });
 
-app.listen(3000, () =>
-  console.log(`🚀 Server ready at: http://localhost:3000`),
+app.listen(CONFIG.PORT, () =>
+  console.log(`🚀 Server ready at: http://localhost:${CONFIG.PORT}`),
 );
