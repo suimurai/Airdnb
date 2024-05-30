@@ -8,6 +8,9 @@ if (!packageId) {
   throw new Error("VITE_AIRDNB_CONTRACT_PACKAGE_ID not provided");
 }
 
+// @ts-ignore
+const apiEndpoint: string | undefined = import.meta.env.VITE_API_ENDPOINT;
+
 export enum QueryKey {
   Proposal = "proposal",
   BookingNFT = "bookingNFT",
@@ -26,5 +29,5 @@ export const CONSTANTS = {
     packageId,
     demoBearType: `${packageId}::demo_bear::DemoBear`,
   },
-  apiEndpoint: "http://localhost:3000/",
+  apiEndpoint: apiEndpoint || "http://localhost:3000/",
 };
