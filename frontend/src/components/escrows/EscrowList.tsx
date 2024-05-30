@@ -22,7 +22,7 @@ export function EscrowList({
 }) {
   const [objectId, setObjectId] = useState("");
 
-  const { myBookingNFTs, isLoading, isFetchingNextPage } =
+  const { myBookingNFTs, isLoading, isFetchingNextPage, votingPower } =
     useMyBookingNFTsContext();
 
   return (
@@ -36,6 +36,9 @@ export function EscrowList({
           />
         </TextField.Root>
       )}
+      <div className="rounded-lg px-4 py-3 mt-3 -mb-3 text-md font-semibold bg-gradient-to-r from-green-300 via-blue-500 to-blue-500 text-white shadow-lg text-center opacity-90">
+        Your Voting Power {votingPower ?? "..."}
+      </div>
       <InfiniteScrollArea
         loadMore={() => {}}
         hasNextPage={false}

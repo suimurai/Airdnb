@@ -6,6 +6,7 @@ import { SuiObjectDisplay } from "@/components/SuiObjectDisplay";
 import { ExplorerLink } from "../ExplorerLink";
 import { useMemo } from "react";
 import { ApiBookingNFTObject } from "@/types/types";
+import { getBookingNFTRemainingNights } from "@/utils/helpers.ts";
 
 /**
  * A component that displays an escrow and allows the user to accept or cancel it.
@@ -21,18 +22,20 @@ export function Escrow({ bookingNFT }: { bookingNFT: ApiBookingNFTObject }) {
   });
 
   const description = useMemo(() => {
-    if(!bookingNFT) return '-'
-    const remainingNights = Math.min(Math.floor((new Date(bookingNFT.checkOutDate).getTime() - new Date().getTime()) / 86400000), Number(bookingNFT.nights))
-    return `${remainingNights} booked night${remainingNights > 1 ? 's' : ''} until checkout`
+    if (!bookingNFT) return "-";
+    const remainingNights = getBookingNFTRemainingNights(bookingNFT);
+    return `${remainingNights} booked night${
+      remainingNights > 1 ? "s" : ""
+    } until checkout`;
   }, [bookingNFT]);
 
   return (
     <SuiObjectDisplay
       object={suiObject.data?.data!}
       placeholder={{
-	      // @ts-ignore-next-line
+        // @ts-ignore-next-line
         image_url: import.meta.env.VITE_BOOKING_PLACEHOLDER_IMAGE_URL,
-        description
+        description,
       }}
     >
       <div className="flex gap-3 flex-wrap">

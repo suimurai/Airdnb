@@ -9,7 +9,11 @@ import { useCurrentAccount } from "@mysten/dapp-kit";
 import { ApiBookingNFTObject, BookingNFTListingQuery } from "@/types/types.ts";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { CONSTANTS, QueryKey } from "@/constants.ts";
-import { constructUrlSearchParams, getNextPageParam } from "@/utils/helpers.ts";
+import {
+  constructUrlSearchParams,
+  getBookingNFTRemainingNights,
+  getNextPageParam,
+} from "@/utils/helpers.ts";
 
 // Define the context type
 interface MyBookingNFTsContextType {
@@ -17,6 +21,8 @@ interface MyBookingNFTsContextType {
   isLoading: boolean;
   isFetchingNextPage: boolean;
   myLastBookingNFT: ApiBookingNFTObject | undefined;
+  votingPower: number | null;
+  activeBookingNFTs: ApiBookingNFTObject | null;
 }
 
 export const MyBookingNFTsContext =
@@ -64,6 +70,19 @@ export const MyBookingNFTsProvider: React.FC<{ children: ReactNode }> = ({
       ? myBookingNFTs[myBookingNFTs.length - 1]
       : undefined;
   }, [myBookingNFTs]);
+  const [votingPower, activeBookingNFTs] = useMemo(() => {
+    const activeBookingNFTs: ApiBookingNFTObject[] = [];
+    let votingPower = 0;
+    if (myBookingNFTs === undefined) return [null, null];
+    myBookingNFTs.forEach((bookingNFT) => {
+      const remainingNights = getBookingNFTRemainingNights(bookingNFT);
+      if (remainingNights > 0) {
+        votingPower += remainingNights;
+        activeBookingNFTs.push(bookingNFT);
+      }
+    });
+    return [votingPower, activeBookingNFTs];
+  }, [myBookingNFTs]);
 
   return (
     <MyBookingNFTsContext.Provider
@@ -72,6 +91,8 @@ export const MyBookingNFTsProvider: React.FC<{ children: ReactNode }> = ({
         isLoading,
         isFetchingNextPage,
         myLastBookingNFT,
+        votingPower,
+        activeBookingNFTs,
       }}
     >
       {children}
