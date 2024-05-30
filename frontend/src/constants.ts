@@ -1,9 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-// You can choose a different env (e.g. using a .env file, or a predefined list)
-import demoContract from "../../api/airdnb-contract.json";
-import airdnbContract from "../../api/airdnb-contract.json";
+// @ts-ignore
+const packageId: string | undefined = import.meta.env
+  .VITE_AIRDNB_CONTRACT_PACKAGE_ID;
+if (!packageId) {
+  throw new Error("VITE_AIRDNB_CONTRACT_PACKAGE_ID not provided");
+}
 
 export enum QueryKey {
   Proposal = "proposal",
@@ -14,14 +17,14 @@ export enum QueryKey {
 
 export const CONSTANTS = {
   airdnbContract: {
-    ...airdnbContract,
-    lockedType: `${airdnbContract.packageId}::lock::Locked`,
-    lockedKeyType: `${airdnbContract.packageId}::lock::Key`,
-    lockedObjectDFKey: `${airdnbContract.packageId}::lock::LockedObjectKey`,
+    packageId,
+    lockedType: `${packageId}::lock::Locked`,
+    lockedKeyType: `${packageId}::lock::Key`,
+    lockedObjectDFKey: `${packageId}::lock::LockedObjectKey`,
   },
   demoContract: {
-    ...demoContract,
-    demoBearType: `${demoContract.packageId}::demo_bear::DemoBear`,
+    packageId,
+    demoBearType: `${packageId}::demo_bear::DemoBear`,
   },
   apiEndpoint: "http://localhost:3000/",
 };

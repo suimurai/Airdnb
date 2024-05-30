@@ -1,111 +1,150 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { execSync } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
-import { homedir } from 'os';
-import path from 'path';
-import { getFullnodeUrl, SuiClient } from '@mysten/sui.js/client';
-import { Ed25519Keypair } from '@mysten/sui.js/keypairs/ed25519';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
-import { fromB64 } from '@mysten/sui.js/utils';
-import { AirdnbContractConfig } from './types';
+import { execSync } from "child_process";
+import { readFileSync, writeFileSync } from "fs";
+import { homedir } from "os";
+import path from "path";
+import { getFullnodeUrl, SuiClient } from "@mysten/sui.js/client";
+import { Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
+import { TransactionBlock } from "@mysten/sui.js/transactions";
+import { fromB64 } from "@mysten/sui.js/utils";
 
-export type Network = 'mainnet' | 'testnet' | 'devnet' | 'localnet';
+export type Network = "mainnet" | "testnet" | "devnet" | "localnet";
 
-export const ACTIVE_NETWORK = (process.env.NETWORK as Network) || 'testnet';
+export const ACTIVE_NETWORK = (process.env.NETWORK as Network) || "testnet";
 
 export const SUI_BIN = `sui`;
 
 export const getActiveAddress = () => {
-	return execSync(`${SUI_BIN} client active-address`, { encoding: 'utf8' }).trim();
+  return execSync(`${SUI_BIN} client active-address`, {
+    encoding: "utf8",
+  }).trim();
 };
 
 /** Returns a signer based on the active address of system's sui. */
 export const getSigner = () => {
-	const sender = getActiveAddress();
+  const sender = getActiveAddress();
 
-	const keystore = JSON.parse(
-		readFileSync(path.join(homedir(), '.sui', 'sui_config', 'sui.keystore'), 'utf8'),
-	);
+  const keystore = JSON.parse(
+    readFileSync(
+      path.join(homedir(), ".sui", "sui_config", "sui.keystore"),
+      "utf8",
+    ),
+  );
 
-	for (const priv of keystore) {
-		const raw = fromB64(priv);
-		if (raw[0] !== 0) {
-			continue;
-		}
+  for (const priv of keystore) {
+    const raw = fromB64(priv);
+    if (raw[0] !== 0) {
+      continue;
+    }
 
-		const pair = Ed25519Keypair.fromSecretKey(raw.slice(1));
-		if (pair.getPublicKey().toSuiAddress() === sender) {
-			return pair;
-		}
-	}
+    const pair = Ed25519Keypair.fromSecretKey(raw.slice(1));
+    if (pair.getPublicKey().toSuiAddress() === sender) {
+      return pair;
+    }
+  }
 
-	throw new Error(`keypair not found for sender: ${sender}`);
+  throw new Error(`keypair not found for sender: ${sender}`);
 };
 
 /** Get the client for the specified network. */
 export const getClient = (network: Network) => {
-	return new SuiClient({ url: getFullnodeUrl(network) });
+  return new SuiClient({ url: getFullnodeUrl(network) });
 };
 
 /** A helper to sign & execute a transaction. */
-export const signAndExecute = async (txb: TransactionBlock, network: Network) => {
-	const client = getClient(network);
-	const signer = getSigner();
+export const signAndExecute = async (
+  txb: TransactionBlock,
+  network: Network,
+) => {
+  const client = getClient(network);
+  const signer = getSigner();
 
-	return client.signAndExecuteTransactionBlock({
-		transactionBlock: txb,
-		signer,
-		options: {
-			showEffects: true,
-			showObjectChanges: true,
-		},
-	});
+  return client.signAndExecuteTransactionBlock({
+    transactionBlock: txb,
+    signer,
+    options: {
+      showEffects: true,
+      showObjectChanges: true,
+    },
+  });
 };
 
 /** Publishes a package and saves the package id to a specified json file. */
 export const publishPackage = async ({
-	packagePath,
-	network,
-	exportFileName = 'contract',
+  packagePath,
+  network,
+  envName = "contract",
 }: {
-	packagePath: string;
-	network: Network;
-	exportFileName: string;
+  packagePath: string;
+  network: Network;
+  envName: string;
 }) => {
-	const txb = new TransactionBlock();
+  const txb = new TransactionBlock();
 
-	const { modules, dependencies } = JSON.parse(
-		execSync(`${SUI_BIN} move build --dump-bytecode-as-base64 --path ${packagePath}`, {
-			encoding: 'utf-8',
-		}),
-	);
+  const { modules, dependencies } = JSON.parse(
+    execSync(
+      `${SUI_BIN} move build --dump-bytecode-as-base64 --path ${packagePath}`,
+      {
+        encoding: "utf-8",
+      },
+    ),
+  );
 
-	const cap = txb.publish({
-		modules,
-		dependencies,
-	});
+  const cap = txb.publish({
+    modules,
+    dependencies,
+  });
 
-	// Transfer the upgrade capability to the sender so they can upgrade the package later if they want.
-	txb.transferObjects([cap], txb.pure(getActiveAddress()));
+  // Transfer the upgrade capability to the sender so they can upgrade the package later if they want.
+  txb.transferObjects([cap], txb.pure(getActiveAddress()));
 
-	const results = await signAndExecute(txb, network);
+  const results = await signAndExecute(txb, network);
 
-	// @ts-ignore-next-line
-	const packageId:string = results.objectChanges?.find((x) => x.type === 'published')?.packageId ?? '';
+  const packageIdObject = results.objectChanges?.find(
+    (x) => x.type === "published",
+  );
+  const packageId =
+    packageIdObject && "packageId" in packageIdObject
+      ? packageIdObject.packageId
+      : undefined;
+  if (!packageId) throw new Error("could not get packageId");
 
-	const airdnbContractConfig : AirdnbContractConfig = {
-		packageId,
-		// @ts-ignore-next-line
-		"adminCap": results.objectChanges?.find((x) => x.objectType === `${packageId}::airdnb::AdminCap`)?.objectId ?? '',
-		// @ts-ignore-next-line
-		"publisher":results.objectChanges?.find((x) => x.objectType === '0x2::package::Publisher')?.objectId ?? '',
-	}
-	// save to an env file
-	writeFileSync(
-		`${exportFileName}.json`,
-		JSON.stringify(airdnbContractConfig),
-		{ encoding: 'utf8', flag: 'w' },
-	);
+  const adminCapObject = results.objectChanges?.find(
+    (x) =>
+      "objectType" in x && x.objectType === `${packageId}::airdnb::AdminCap`,
+  );
+  const adminCap =
+    adminCapObject && "objectId" in adminCapObject
+      ? adminCapObject.objectId
+      : undefined;
+  if (!adminCap) throw new Error("could not get adminCap");
+
+  const publisherObject = results.objectChanges?.find(
+    (x) => "objectType" in x && x.objectType === "0x2::package::Publisher",
+  );
+  const publisher =
+    publisherObject && "objectId" in publisherObject
+      ? publisherObject.objectId
+      : undefined;
+  if (!publisher) throw new Error("could not get publisher");
+
+  // save to an env file
+  writeFileSync(
+    `.env`,
+    `${envName}_PACKAGE_ID=${packageId}\n${envName}_ADMIN_CAP=${adminCap}\n${envName}_PUBLISHER=${publisher}`,
+    {
+      encoding: "utf8",
+      flag: "w",
+    },
+  );
+  writeFileSync(
+    `../frontend/.env`,
+    `VITE_${envName}_PACKAGE_ID=${packageId}\nVITE_${envName}_ADMIN_CAP=${adminCap}\nVITE_${envName}_PUBLISHER=${publisher}`,
+    {
+      encoding: "utf8",
+      flag: "w",
+    },
+  );
 };

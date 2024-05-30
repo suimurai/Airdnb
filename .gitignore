@@ -68,6 +68,7 @@ yarn-error.log*
 # misc
 *.key
 .env
+.env.local
 checkpoints_dir/*
 light_client.yaml
 docs/content/references/sui-api/sui-graphql/*
