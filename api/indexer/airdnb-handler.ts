@@ -105,7 +105,7 @@ export const handleAirdnbEvents = async (events: SuiEvent[], type: string) => {
       }),
     ),
   );
-  await Promise.all(newVotes.map((data) => ({ data })));
+  await Promise.all(newVotes.map((data) => prisma.vote.create({ data })));
   await Promise.all(
     Object.values(proposalUpdates).map((update) => {
       // adhoc fix

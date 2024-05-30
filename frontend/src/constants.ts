@@ -8,6 +8,7 @@ import airdnbContract from "../../api/airdnb-contract.json";
 export enum QueryKey {
   Proposal = "proposal",
   BookingNFT = "bookingNFT",
+  Vote = "vote",
   GetOwnedObjects = "getOwnedObjects",
 }
 

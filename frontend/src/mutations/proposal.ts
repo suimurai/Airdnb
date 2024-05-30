@@ -46,7 +46,20 @@ export function useVoteOnProposal() {
 
     onSuccess: () => {
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: [QueryKey.Proposal] });
+        queryClient.invalidateQueries({
+          queryKey: [QueryKey.Proposal],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QueryKey.Vote],
+        });
+        setTimeout(() => {
+          queryClient.invalidateQueries({
+            queryKey: [QueryKey.Proposal],
+          });
+          queryClient.invalidateQueries({
+            queryKey: [QueryKey.Vote],
+          });
+        }, 1_000);
       }, 1_000);
     },
   });
@@ -85,7 +98,14 @@ export function useCreateProposal() {
 
     onSuccess: () => {
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: [QueryKey.Proposal] });
+        queryClient.invalidateQueries({
+          queryKey: [QueryKey.Proposal],
+        });
+        setTimeout(() => {
+          queryClient.invalidateQueries({
+            queryKey: [QueryKey.Proposal],
+          });
+        }, 1_000);
       }, 1_000);
     },
   });

@@ -18,6 +18,7 @@ import { router } from "@/routes/index.tsx";
 
 import { RouterProvider } from "react-router-dom";
 import { MyBookingNFTsProvider } from "@/context/myBookingNFTsContext.tsx";
+import { MyVotesProvider } from "@/context/myVotesContext.tsx";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +36,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
           <WalletProvider autoConnect>
             <MyBookingNFTsProvider>
-              <RouterProvider router={router} />
+              <MyVotesProvider>
+                <RouterProvider router={router} />
+              </MyVotesProvider>
             </MyBookingNFTsProvider>
           </WalletProvider>
         </SuiClientProvider>

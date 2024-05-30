@@ -82,9 +82,7 @@ export const MyBookingNFTsProvider: React.FC<{ children: ReactNode }> = ({
 export function useMyBookingNFTsContext() {
   const myBookingNFTsContext = useContext(MyBookingNFTsContext);
   if (!myBookingNFTsContext) {
-    throw new Error(
-      "MyBookingNFTsContextProvider must be used within the context",
-    );
+    throw new Error("MyBookingNFTsContext must be used within the context");
   }
   return myBookingNFTsContext;
 }

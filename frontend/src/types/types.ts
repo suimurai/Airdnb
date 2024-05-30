@@ -28,6 +28,15 @@ export type ApiProposalObject = {
   votesAgainst: number;
 };
 
+export type ApiVoteObject = {
+  id: number;
+  proposalId: string;
+  voterBookingNFTId: string;
+  voter: string;
+  voteFor: boolean;
+  voteWeight: number;
+};
+
 export type ApiEscrowObject = {
   id: string;
   objectId: string;
@@ -41,6 +50,10 @@ export type ApiEscrowObject = {
 
 export type BookingNFTListingQuery = {
   recipient?: string;
+};
+
+export type VoteListingQuery = {
+  voter?: string;
 };
 
 export type EscrowListingQuery = {

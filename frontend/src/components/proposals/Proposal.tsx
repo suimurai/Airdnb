@@ -9,6 +9,7 @@ import { Button } from "@radix-ui/themes";
 import { useVoteOnProposal } from "@/mutations/proposal.ts";
 import { useMemo } from "react";
 import { useMyBookingNFTsContext } from "@/context/myBookingNFTsContext.tsx";
+import { useMyVotesContext } from "@/context/myVotesContext.tsx";
 
 /**
  * A component that displays an escrow and allows the user to accept or cancel it.
@@ -32,6 +33,11 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
     [myLastBookingNFT, pendingVoteSubmission],
   );
 
+  const { myVotes } = useMyVotesContext();
+  const myVote = useMemo(() => {
+    return myVotes?.find((v) => v.proposalId === proposal?.objectId);
+  }, [myVotes, proposal]);
+
   return (
     <SuiObjectDisplay
       object={suiObject.data?.data!}
@@ -46,46 +52,58 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
           <span className="text-[green]">+{proposal.votesFor}</span>{" "}
           <span className="text-[red]">-{proposal.votesAgainst}</span>
         </p>
-        <Button
-          className={` bg-transparent text-black ml-auto px-1.5 ${
-            disabled ? "" : "cursor-pointer"
-          }`}
-          disabled={disabled}
-          onClick={() => {
-            if (myLastBookingNFT) {
-              vote({
-                proposal,
-                bookingNFT: myLastBookingNFT,
-                voteFor: true,
-              });
-            }
-          }}
-        >
-          <img
-            src={disabled ? "/thumbs-up-gray.svg" : "/thumbs-up.svg"}
-            className="w-8"
-          />
-        </Button>
-        <Button
-          className={` bg-transparent text-black px-1.5 ${
-            disabled ? "" : "cursor-pointer"
-          }`}
-          disabled={disabled}
-          onClick={() => {
-            if (myLastBookingNFT) {
-              vote({
-                proposal,
-                bookingNFT: myLastBookingNFT,
-                voteFor: false,
-              });
-            }
-          }}
-        >
-          <img
-            src={disabled ? "/thumbs-down-gray.svg" : "/thumbs-down.svg"}
-            className="w-8"
-          />
-        </Button>
+        {myVote ? (
+          <div className="ml-auto flex items-center text-sm">
+            You Voted
+            <img
+              src={myVote.voteFor ? "/thumbs-up.svg" : "/thumbs-down.svg"}
+              className="w-8 ml-1.5"
+            />
+          </div>
+        ) : (
+          <>
+            <Button
+              className={`bg-transparent text-black ml-auto px-1.5 ${
+                disabled ? "" : "cursor-pointer"
+              }`}
+              disabled={disabled}
+              onClick={() => {
+                if (myLastBookingNFT) {
+                  vote({
+                    proposal,
+                    bookingNFT: myLastBookingNFT,
+                    voteFor: true,
+                  });
+                }
+              }}
+            >
+              <img
+                src={disabled ? "/thumbs-up-gray.svg" : "/thumbs-up.svg"}
+                className="w-8"
+              />
+            </Button>
+            <Button
+              className={`bg-transparent text-black px-1.5 ${
+                disabled ? "" : "cursor-pointer"
+              }`}
+              disabled={disabled}
+              onClick={() => {
+                if (myLastBookingNFT) {
+                  vote({
+                    proposal,
+                    bookingNFT: myLastBookingNFT,
+                    voteFor: false,
+                  });
+                }
+              }}
+            >
+              <img
+                src={disabled ? "/thumbs-down-gray.svg" : "/thumbs-down.svg"}
+                className="w-8"
+              />
+            </Button>
+          </>
+        )}
       </div>
     </SuiObjectDisplay>
   );
