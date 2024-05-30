@@ -47,7 +47,7 @@ export function InfiniteScrollArea({
   }, [observerTarget, loadMore]);
 
   if (!children || (Array.isArray(children) && children.length === 0))
-    return <div className="p-3">No results found.</div>;
+    return <div className="p-3 pt-6">No results found.</div>;
   return (
     <>
       <div className={`grid ${gridClasses}`}>{children}</div>
