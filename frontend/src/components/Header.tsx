@@ -2,27 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { CONSTANTS } from "@/constants";
-import { useGenerateDemoData } from "@/mutations/demo";
 import { ConnectButton, useCurrentAccount } from "@mysten/dapp-kit";
 import { SizeIcon } from "@radix-ui/react-icons";
 import { Box, Button, Container, Flex, Heading } from "@radix-ui/themes";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-
-const menu = [
-  {
-    title: "Escrows",
-    link: "/escrows",
-  },
-  {
-    title: "Manage Objects",
-    link: "/locked",
-  },
-];
 
 export function Header() {
   const account = useCurrentAccount();
-  const [isPending, setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(false);
   return (
     <Container>
       <Flex
@@ -44,16 +31,20 @@ export function Header() {
             className="cursor-pointer"
             disabled={isPending}
             onClick={() => {
-              setIsPending(true)
-              fetch(CONSTANTS.apiEndpoint + 'mintBookingNFT?recipient=' + account?.address)
-                .catch(e => {
+              setIsPending(true);
+              fetch(
+                CONSTANTS.apiEndpoint +
+                  "mintBookingNFT?recipient=" +
+                  account?.address,
+              )
+                .catch((e) => {
                   console.log(e);
                   alert(String(e));
                 })
                 .finally(() => setIsPending(false));
             }}
           >
-            Mint Demo Booking
+            Claim Demo Booking
           </Button>
         </Box>
 

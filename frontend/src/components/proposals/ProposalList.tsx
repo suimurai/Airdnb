@@ -7,10 +7,11 @@ import { Proposal } from "./Proposal";
 import { InfiniteScrollArea } from "@/components/InfiniteScrollArea";
 import { constructUrlSearchParams, getNextPageParam } from "@/utils/helpers";
 import { ApiProposalObject, BookingNFTListingQuery } from "@/types/types";
-import { useState } from "react";
-import { Button, TextField } from "@radix-ui/themes";
+import { useCallback, useEffect, useState } from "react";
+import { Button, Card, Inset, TextArea, TextField } from "@radix-ui/themes";
 import { useCreateProposal } from "@/mutations/proposal.ts";
 import { useMyBookingNFTsContext } from "@/context/myBookingNFTsContext.tsx";
+import dummyProposals from "../../../../dummy-proposals.json";
 
 /**
  * A component that fetches and displays a list of escrows.
@@ -49,6 +50,24 @@ export function ProposalList({
   const { mutate: createProposal, isPending: pendingProposalCreation } =
     useCreateProposal();
 
+  const [createProposalView, setCreateProposalView] = useState(false);
+
+  useEffect(() => {
+    if (!pendingProposalCreation) {
+      setCreateProposalView(false);
+    }
+  }, [pendingProposalCreation]);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const fillRandom = useCallback(() => {
+    const proposalContent =
+      dummyProposals[Math.floor(Math.random() * dummyProposals.length)];
+    setTitle(proposalContent.title);
+    setDescription(proposalContent.description);
+  }, []);
+
   return (
     <div>
       {enableSearch && (
@@ -61,27 +80,68 @@ export function ProposalList({
         </TextField.Root>
       )}
       <Button
-        disabled={!myLastBookingNFT || pendingProposalCreation}
         className="cursor-pointer mt-5"
-        onClick={() => {
-          if (myLastBookingNFT) {
-            createProposal({
-              bookingNFT: myLastBookingNFT,
-            });
-          }
-        }}
+        onClick={() => setCreateProposalView((val) => !val)}
       >
-        Create Demo Proposal
+        {createProposalView ? "Show Proposals" : "Create Proposal"}
       </Button>
-      <InfiniteScrollArea
-        loadMore={() => fetchNextPage()}
-        hasNextPage={hasNextPage}
-        loading={isFetchingNextPage || isLoading}
-      >
-        {data?.map((proposal: ApiProposalObject) => (
-          <Proposal key={proposal.id} proposal={proposal} />
-        ))}
-      </InfiniteScrollArea>
+      {createProposalView ? (
+        <div className="grid py-6 grid-cols-1 md:grid-cols-2 gap-5">
+          <Card className="!p-0 sui-object-card border-gray-200">
+            <div className="p-1">
+              <div className="flex">
+                <p className="w-full text-xl mb-4">New Proposal</p>
+                <Button
+                  className="cursor-pointer px-6 ml-2"
+                  onClick={fillRandom}
+                >
+                  Fill Random
+                </Button>
+              </div>
+              <TextField.Input
+                placeholder="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <TextArea
+                className="mt-3"
+                placeholder="description"
+                value={description}
+                rows={4}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <Inset className="p-2 border-t mt-3 bg-gray-100 rounded-none flex">
+              <p className="text-sm flex-shrink-0 flex items-center gap-2"></p>
+              <Button
+                disabled={!myLastBookingNFT || pendingProposalCreation}
+                className="cursor-pointer ml-auto mr-2 px-6"
+                onClick={() => {
+                  if (myLastBookingNFT) {
+                    createProposal({
+                      bookingNFT: myLastBookingNFT,
+                      title,
+                      description,
+                    });
+                  }
+                }}
+              >
+                Submit
+              </Button>
+            </Inset>
+          </Card>
+        </div>
+      ) : (
+        <InfiniteScrollArea
+          loadMore={() => fetchNextPage()}
+          hasNextPage={hasNextPage}
+          loading={isFetchingNextPage || isLoading}
+        >
+          {data?.map((proposal: ApiProposalObject) => (
+            <Proposal key={proposal.id} proposal={proposal} />
+          ))}
+        </InfiniteScrollArea>
+      )}
     </div>
   );
 }
