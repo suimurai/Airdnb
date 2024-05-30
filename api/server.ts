@@ -13,7 +13,6 @@ import {
   WhereParamTypes,
 } from "./utils/api-queries";
 import { mintBookingNFT } from "./helpers/mint-booking-nft";
-import { createDummyProposal } from "./helpers/create-dummy-proposal";
 import { getActiveAddress } from "./sui-utils";
 
 const app = express();
@@ -23,15 +22,6 @@ app.use(express.json());
 
 app.get("/", async (_req, res) => {
   return res.send({ message: "🚀 API is functional 🚀" });
-});
-
-app.get("/createDummyProposal", async (_req, res) => {
-  try {
-    await createDummyProposal();
-    return res.send({ message: "Created" });
-  } catch (e) {
-    res.status(500).send({ message: String(e) });
-  }
 });
 
 app.get("/mintBookingNFT", async (req, res) => {

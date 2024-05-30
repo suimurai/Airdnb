@@ -11,7 +11,29 @@ import { useCallback, useEffect, useState } from "react";
 import { Button, Card, Inset, TextArea, TextField } from "@radix-ui/themes";
 import { useCreateProposal } from "@/mutations/proposal.ts";
 import { useMyBookingNFTsContext } from "@/context/myBookingNFTsContext.tsx";
-import dummyProposals from "../../../../dummy-proposals.json";
+
+const dummyProposals = [
+  {
+    title: "Add More Comfortable Seating",
+    description:
+      "Adding five more comfortable seating options, like ergonomic chairs and cozy couches, would be fantastic. It'll make working here way more enjoyable for everyone.",
+  },
+  {
+    title: "Upgrade Our Internet Speed",
+    description:
+      "Boosting our internet speed with a high-speed fiber-optic connection would be awesome. It'll make video calls and big file uploads way smoother for everyone.",
+  },
+  {
+    title: "Create a Quiet Zone",
+    description:
+      "Creating a designated quiet zone with soundproof booths would be amazing. It'll give everyone a space for focused work and private calls, reducing distractions for all.",
+  },
+  {
+    title: "Enhance Break Area",
+    description:
+      "Enhancing the break area with a better coffee machine and a variety of healthy snacks would be great. It'll make breaks more enjoyable and energizing for everyone.",
+  },
+];
 
 /**
  * A component that fetches and displays a list of escrows.
