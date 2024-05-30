@@ -1,10 +1,9 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 import { Root } from "./root";
-import { LockedDashboard } from "@/routes/LockedDashboard";
 import { EscrowDashboard } from "@/routes/EscrowDashboard";
 
 export const router = createBrowserRouter([
