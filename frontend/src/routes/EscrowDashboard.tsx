@@ -3,33 +3,20 @@
 
 import { useState } from "react";
 import { Tabs, Tooltip } from "@radix-ui/themes";
-import { LockedList } from "../components/locked/ApiLockedList";
 import { EscrowList } from "../components/escrows/EscrowList";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { useCurrentAccount } from "@mysten/dapp-kit";
 import { ProposalList } from "@/components/proposals/ProposalList";
 
 export function EscrowDashboard() {
-  const account = useCurrentAccount();
   const tabs = [
     {
       name: "Proposals",
-      component: () => (
-        <ProposalList
-          params={{}}
-        />
-      ),
+      component: () => <ProposalList params={{}} />,
       tooltip: "Proposals",
     },
     {
       name: "My Bookings",
-      component: () => (
-        <EscrowList
-          params={{
-            recipient: account?.address,
-          }}
-        />
-      ),
+      component: () => <EscrowList />,
       tooltip: "My Bookings",
     },
   ];

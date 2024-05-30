@@ -19,7 +19,7 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
   const { mutate: vote, isPending: pendingVoteSubmission } =
     useVoteOnProposal();
 
-  const { myLastBookingNFT } = useMyBookingNFTsContext();
+  const { activeBookingNFTs } = useMyBookingNFTsContext();
   const suiObject = useSuiClientQuery("getObject", {
     id: proposal?.objectId,
     options: {
@@ -29,8 +29,8 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
   });
 
   const disabled = useMemo(
-    () => !myLastBookingNFT || pendingVoteSubmission,
-    [myLastBookingNFT, pendingVoteSubmission],
+    () => !activeBookingNFTs || pendingVoteSubmission,
+    [activeBookingNFTs, pendingVoteSubmission],
   );
 
   const { myVotes } = useMyVotesContext();
@@ -68,10 +68,10 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
               }`}
               disabled={disabled}
               onClick={() => {
-                if (myLastBookingNFT) {
+                if (activeBookingNFTs) {
                   vote({
                     proposal,
-                    bookingNFT: myLastBookingNFT,
+                    bookingNFTs: activeBookingNFTs,
                     voteFor: true,
                   });
                 }
@@ -88,10 +88,10 @@ export function Proposal({ proposal }: { proposal: ApiProposalObject }) {
               }`}
               disabled={disabled}
               onClick={() => {
-                if (myLastBookingNFT) {
+                if (activeBookingNFTs) {
                   vote({
                     proposal,
-                    bookingNFT: myLastBookingNFT,
+                    bookingNFTs: activeBookingNFTs,
                     voteFor: false,
                   });
                 }

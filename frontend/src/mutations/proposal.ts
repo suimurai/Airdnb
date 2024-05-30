@@ -16,29 +16,27 @@ export function useVoteOnProposal() {
   return useMutation({
     mutationFn: async ({
       proposal,
-      bookingNFT,
+      bookingNFTs,
       voteFor,
     }: {
       proposal: ApiProposalObject;
-      bookingNFT: ApiBookingNFTObject;
+      bookingNFTs: ApiBookingNFTObject[];
       voteFor: boolean;
     }) => {
-      console.log({
-        proposal,
-        bookingNFT,
-        voteFor,
-      });
       if (!currentAccount?.address)
         throw new Error("You need to connect your wallet!");
       const txb = new TransactionBlock();
 
-      txb.moveCall({
-        target: `${CONSTANTS.airdnbContract.packageId}::airdnb::vote_on_proposal`,
-        arguments: [
-          txb.object(proposal.objectId),
-          txb.object(bookingNFT.objectId),
-          txb.pure.bool(voteFor),
-        ],
+      bookingNFTs.forEach((bookingNFT) => {
+        txb.moveCall({
+          target: `${CONSTANTS.airdnbContract.packageId}::airdnb::vote_on_proposal`,
+          arguments: [
+            txb.object(proposal.objectId),
+            txb.object(bookingNFT.objectId),
+            txb.pure.bool(voteFor),
+            txb.object("0x6"),
+          ],
+        });
       });
 
       return executeTransaction(txb);

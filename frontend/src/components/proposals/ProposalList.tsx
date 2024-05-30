@@ -51,13 +51,6 @@ export function ProposalList({
     useCreateProposal();
 
   const [createProposalView, setCreateProposalView] = useState(false);
-
-  useEffect(() => {
-    if (!pendingProposalCreation) {
-      setCreateProposalView(false);
-    }
-  }, [pendingProposalCreation]);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
@@ -67,6 +60,14 @@ export function ProposalList({
     setTitle(proposalContent.title);
     setDescription(proposalContent.description);
   }, []);
+
+  useEffect(() => {
+    if (!pendingProposalCreation) {
+      setCreateProposalView(false);
+      setTitle("");
+      setDescription("");
+    }
+  }, [pendingProposalCreation]);
 
   return (
     <div>

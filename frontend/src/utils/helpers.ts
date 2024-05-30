@@ -32,7 +32,7 @@ export function getBookingNFTRemainingNights(bookingNFT: ApiBookingNFTObject) {
   const checkoutTime = new Date(bookingNFT.checkOutDate).getTime();
   if (now > checkoutTime) return 0;
   return Math.min(
-    Math.floor((checkoutTime - now) / 86400000),
+    Math.trunc((checkoutTime - now) / 86400000),
     Number(bookingNFT.nights),
   );
 }

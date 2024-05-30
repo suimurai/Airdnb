@@ -22,7 +22,7 @@ interface MyBookingNFTsContextType {
   isFetchingNextPage: boolean;
   myLastBookingNFT: ApiBookingNFTObject | undefined;
   votingPower: number | null;
-  activeBookingNFTs: ApiBookingNFTObject | null;
+  activeBookingNFTs: ApiBookingNFTObject[] | null;
 }
 
 export const MyBookingNFTsContext =

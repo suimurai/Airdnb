@@ -3,6 +3,7 @@ module airdnb::airdnb {
     use sui::display;
     use sui::event;
     use std::string::{utf8, String};
+    use sui::clock::{Clock, timestamp_ms};
 
     // Structure representing a Booking NFT
     public struct BookingNFT has key, store {
@@ -139,10 +140,10 @@ module airdnb::airdnb {
     }
 
     // Function to vote on a proposal
-    public entry fun vote_on_proposal(proposal: &mut Proposal, nft: &mut BookingNFT, vote_for: bool, ctx: &mut TxContext) {
+    public entry fun vote_on_proposal(proposal: &mut Proposal, nft: &mut BookingNFT, vote_for: bool, clock: &Clock, ctx: &mut TxContext) {
         assert!(!vector::contains(&proposal.voters, &object::id(nft)), 0);
 
-        let current_time_ms = tx_context::epoch_timestamp_ms(ctx);
+        let current_time_ms = timestamp_ms(clock);
         let remaining = remaining_nights(nft, current_time_ms);
         let vote_weight = if (remaining < nft.nights) { remaining } else { nft.nights };
         // Record the vote
