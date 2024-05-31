@@ -49,7 +49,7 @@ export function EscrowList({ enableSearch }: { enableSearch?: boolean }) {
       </InfiniteScrollArea>
 
       <Button
-        className={`cursor-pointer shadow-md font-semibold py-5 ${
+        className={`rounded-md cursor-pointer shadow-md font-semibold py-5 ${
           isPending ? "" : "bg-primary"
         }`}
         disabled={isPending}

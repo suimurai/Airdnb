@@ -103,7 +103,7 @@ export function ProposalList({
         </TextField.Root>
       )}
       <Button
-        className="cursor-pointer mt-5 bg-primary py-5 shadow-md font-semibold"
+        className="rounded-md cursor-pointer mt-5 bg-primary py-5 shadow-md font-semibold"
         onClick={() => setCreateProposalView((val) => !val)}
       >
         {createProposalView ? "Show Proposals" : "Create Proposal"}
@@ -115,7 +115,7 @@ export function ProposalList({
               <div className="flex">
                 <p className="w-full text-xl mt-1 mb-5">New Proposal</p>
                 <Button
-                  className="cursor-pointer px-6 ml-2 bg-primary shadow-md py-5 font-semibold"
+                  className="rounded-md cursor-pointer px-6 ml-2 bg-primary shadow-md py-5 font-semibold"
                   onClick={fillRandom}
                 >
                   Fill Random
@@ -138,7 +138,7 @@ export function ProposalList({
               <p className="text-sm flex-shrink-0 flex items-center gap-2"></p>
               <Button
                 disabled={!myLastBookingNFT || pendingProposalCreation}
-                className={`cursor-pointer ml-auto mr-2 px-6 shadow-md font-semibold py-5 ${
+                className={`cursor-pointer ml-auto mr-2 px-6 shadow-md font-semibold py-5 rounded-md ${
                   !myLastBookingNFT || pendingProposalCreation
                     ? ""
                     : "bg-primary"
