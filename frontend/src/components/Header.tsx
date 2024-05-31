@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { ConnectButton } from "@mysten/dapp-kit";
-import { SizeIcon } from "@radix-ui/react-icons";
 import { Box, Container, Flex, Heading } from "@radix-ui/themes";
 
 export function Header() {
@@ -13,11 +12,11 @@ export function Header() {
         px="4"
         py="2"
         justify="between"
-        className="border-b flex flex-wrap"
+        className="border-b flex flex-wrap items-center"
       >
         <Box>
-          <Heading className="flex items-center gap-3">
-            <SizeIcon width={24} height={24} />
+          <Heading className="flex items-center text-primary">
+            <img src="/logo.png" width={60} height={60} className="p-2" />
             Airdnb
           </Heading>
         </Box>

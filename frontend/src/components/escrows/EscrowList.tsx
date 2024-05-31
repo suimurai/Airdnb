@@ -35,7 +35,7 @@ export function EscrowList({ enableSearch }: { enableSearch?: boolean }) {
           />
         </TextField.Root>
       )}
-      <div className="rounded-lg px-4 py-3 mt-3 -mb-3 text-md font-semibold bg-gradient-to-r from-green-400 via-blue-500 to-blue-500 text-white shadow-lg text-center opacity-90">
+      <div className="rounded-lg px-4 py-3 mt-3 -mb-3 text-md font-semibold bg-gradient-to-r from-primary via-blue-500 to-primary text-white shadow-lg text-center opacity-90">
         Your Voting Power {votingPower ?? "..."}
       </div>
       <InfiniteScrollArea
@@ -50,7 +50,7 @@ export function EscrowList({ enableSearch }: { enableSearch?: boolean }) {
 
       <Button
         className={`cursor-pointer shadow-md font-semibold py-5 ${
-          isPending ? "" : "opacity-90 bg-blue-500"
+          isPending ? "" : "bg-primary"
         }`}
         disabled={isPending}
         onClick={() => {
